@@ -6,18 +6,18 @@
 Features: 
 - 
 - En-/Decode most basic python types to strings and back!
-   - Lists, Dicts, Tuples, Sets, Str, Int, Float, Bools, None
-- Almost any nested combination is supported.
+   - Lists, Dicts, Tuples, Sets, Str, Int, Float, Bools, None, Bytestrings
+- Any nested combination is supported.
 - "Blazingly fast" decoding and fast encoding
-- Support for any valid key values for dictionaries from the supported types
-- Smaller resulting size \
+- Support for any valid key values for dictionaries of the supported types
+- Smaller resulting size than the build in str function\
   (downside: not really readable/editable strings)
 
 
 Currently known issues:
 - 
-- When encoding strings the ' " ' char followed by an unescaped '\3' char will lead to errors.
-- Bytes and Custom Types are currently not supported (though I will add support for bytes soon)
+- When encoding strings or byte-strings the ' " ' char followed by an unescaped '\3' char will lead to errors.
+- Custom Types are not supported
 
 
 Made in pure python and somehow faster at decoding than literal_eval.

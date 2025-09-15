@@ -13,23 +13,23 @@ p_reset = '\033[0;0m'
 
 
 def basic_check():
-    data = data_to_check[0]
-
+    data = deepcopy(data_to_check[0])
+    original_data = deepcopy(data)
     encoded = encode_data(data)
     dec_data:dict = decode_data(encoded)
     passing = True
     for key, val in dec_data.items():
-        if key not in data:
+        if key not in original_data:
             print(p_red +f"Error in the en-/decoder!\n"
                   f"Key not found in original data: {key}" +p_reset)
             passing = False
             continue
-        if data[key] != val and type(data[key]) != type(val):
+        if original_data[key] != val and type(original_data[key]) != type(val):
             print(f"Error in the en-/decoder!\n"
                   f"Val was incorrect: {val}\n"
-                  f"Should be        : {data[key]}\n"
-                  f"Is type          : {type(data[key])}\n"
-                  f"Should type      : {type(val)}")
+                  f"Should be        : {original_data[key]}\n"
+                  f"Is type          : {type(val)}\n"
+                  f"Should type      : {type(original_data[key])}")
             passing = False
 
     for key, val in data.items():

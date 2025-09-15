@@ -92,6 +92,10 @@ def _dec_string(data:str, offset:int) -> tuple[str, int]:
     end = data.find('"\3', offset)
     return data[offset:end], end + 2
 
+def _dec_bytes(data:str, offset:int) -> tuple[bytes, int]:
+    end = data.find('"\3', offset)
+    return data[offset:end].encode(), end + 2
+
 def _dec_none(data:str, offset:int) -> tuple[None, int]:
     #if data[offset] != "\3":
     #    raise ValueError("Invalid 'none' decode data")
@@ -117,3 +121,4 @@ _lookup_table[ord('"')] = _dec_string
 _lookup_table[ord('N')] = _dec_none
 _lookup_table[ord('T')] = _dec_true
 _lookup_table[ord('F')] = _dec_false
+_lookup_table[ord('B')] = _dec_bytes

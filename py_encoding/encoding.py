@@ -26,6 +26,8 @@ def encode_data(data) -> str:
         return _enc_num(data)
     if t == str:
         return _enc_str(data)
+    if t == bytes:
+        return _enc_bytes(data)
     return _enc_val(data, t)
 
 
@@ -41,8 +43,10 @@ def _enc_dict(data:dict) -> str:
             s_key = _enc_num(key)
         elif k_type == tuple:
             s_key = _enc_tuple(key)
-        else:
+        elif k_type == bool:
             s_key = _enc_bool_and_none(key)
+        else:
+            s_key = _enc_val(key, k_type)
 
         if v_type == str:
             s_val = _enc_str(val)
@@ -56,8 +60,10 @@ def _enc_dict(data:dict) -> str:
             s_val = _enc_tuple(val)
         elif v_type == set:
             s_val = _enc_set(val)
-        else:
+        elif v_type == bool:
             s_val = _enc_bool_and_none(val)
+        else:
+            s_val = _enc_val(val, v_type)
         out.append(s_key)
         out.append(s_val)
 
@@ -144,6 +150,8 @@ def _enc_tuple(data:tuple) -> str:
 def _enc_val(val, val_type):
     if val_type == bool or val_type == type(None):
         return str(val)[0] #+ "\3"
+    if val_type == bytes:
+        return _enc_bytes(val)
 
 
     if val_type == str:
@@ -163,6 +171,7 @@ def _enc_num(val) -> str:
         return str(val) + "\3"
 
 
-
+def _enc_bytes(data:bytes) -> str:
+    return "B" +data.decode()+ '"\3'
 
 
