@@ -1,5 +1,5 @@
 from time import perf_counter
-from .encoding import encode_data
+from py_encoding.encoding import encode_data
 
 p_red = '\033[38;5;160m'
 p_reset = '\033[0;0m'

@@ -1,7 +1,6 @@
 import json
 from ast import literal_eval
 from time import perf_counter
-
 from py_encoding import encode_data, decode_data, compress_data
 from tests.encoding_data_to_check import data_to_check
 from copy import deepcopy
@@ -88,7 +87,6 @@ def small_compare_check():
         encode_data(data)
         own_encode_start = perf_counter()
         m_enc_data = encode_data(data)
-
         own_encode_stop = perf_counter()
 
 
@@ -120,7 +118,7 @@ def small_compare_check():
 
 def large_compare_check(size:int=15):
     #large_data = data_to_check[1]
-    large_data = data_to_check[0]
+    large_data = deepcopy(data_to_check[0])
 
     for i in range(size):
         large_data[i] = deepcopy(large_data)
