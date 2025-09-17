@@ -111,6 +111,9 @@ def _dec_false(data:str, offset:int) -> tuple[False, int]:
     #    raise ValueError("Invalid 'false' decode data")
     return False, offset #+ 1
 
+def _dec_types(data:str, offset:int) -> tuple[type, int]:
+    return _type_decode_lookup_table[data[offset]], offset+1
+
 
 _lookup_table = [_dec_val for _ in range(125)]
 _lookup_table[ord("{")] = _dec_dict
@@ -122,3 +125,17 @@ _lookup_table[ord('N')] = _dec_none
 _lookup_table[ord('T')] = _dec_true
 _lookup_table[ord('F')] = _dec_false
 _lookup_table[ord('B')] = _dec_bytes
+_lookup_table[ord('t')] = _dec_types
+
+_type_decode_lookup_table = {
+    "0":list,
+    "1":dict,
+    "2":set,
+    "3":tuple,
+    "4":int,
+    "5":float,
+    "6":str,
+    "7":bool,
+    "8":type,
+    "9":bytes,
+}

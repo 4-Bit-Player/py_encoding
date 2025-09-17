@@ -68,6 +68,9 @@ def _enc_num(val, result:list[str]):
 def _enc_bytes(data:bytes, result:list[str]):
     return result.append("B" +data.decode()+ '"\3')
 
+def _enc_type(val:type, result:list[str]):
+    return result.append("t" +_type_encode_lookup_table[val])
+
 
 _encode_lookup_table = {
     list: _enc_list,
@@ -79,5 +82,18 @@ _encode_lookup_table = {
     str: _enc_str,
     bool:_enc_bool_and_none,
     type(None):_enc_bool_and_none,
-    bytes: _enc_bytes
+    bytes: _enc_bytes,
+    type:_enc_type,
+}
+_type_encode_lookup_table = {
+    list:"0",
+    dict:"1",
+    set:"2",
+    tuple:"3",
+    int:"4",
+    float:"5",
+    str:"6",
+    bool:"7",
+    type:"8",
+    bytes:"9",
 }

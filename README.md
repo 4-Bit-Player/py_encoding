@@ -6,7 +6,7 @@
 Features: 
 - 
 - En-/Decode most basic python types to strings and back!
-   - Lists, Dicts, Tuples, Sets, Str, Int, Float, Bools, None, Bytestrings
+   - Lists, Dicts, Tuples, Sets, Str, Int, Float, Bools, None, Bytestrings, Types itself
 - Any nested combination is supported.
 - "Blazingly fast" decoding and fast encoding
 - Support for any valid key values for dictionaries of the supported types
