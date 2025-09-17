@@ -2,6 +2,7 @@ import json
 from ast import literal_eval
 from time import perf_counter
 from py_encoding import encode_data, decode_data, compress_data
+from py_encoding import encode_data, decode_data
 from tests.encoding_data_to_check import data_to_check
 from copy import deepcopy
 
