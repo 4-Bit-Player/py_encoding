@@ -1,7 +1,7 @@
 
 
 
-def decode_data(data:str) -> any:
+def decode_data(data:str):
     """
     Small decode function.\n
     Only works with strings that got encoded with my small encoder.
@@ -60,7 +60,6 @@ def _dec_set(data, offset) -> tuple[set, int]:
 
 def _dec_dict(data:str, offset:int) -> tuple[dict, int]:
     start = offset
-    #out:list[tuple[any, any]] = []
     out:dict = {}
     while data[start] != "}":
 
@@ -68,7 +67,6 @@ def _dec_dict(data:str, offset:int) -> tuple[dict, int]:
         key, start = _lookup_table[char](data, start + 1)
         char = ord(data[start])
         val, start = _lookup_table[char](data, start+1)
-        #out.append((key, val))
         out[key] = val
 
     return out, start+1
@@ -97,18 +95,12 @@ def _dec_bytes(data:str, offset:int) -> tuple[bytes, int]:
     return data[offset:end].encode(), end + 2
 
 def _dec_none(data:str, offset:int) -> tuple[None, int]:
-    #if data[offset] != "\3":
-    #    raise ValueError("Invalid 'none' decode data")
     return None, offset #+ 1
 
-def _dec_true(data:str, offset:int) -> tuple[True, int]:
-    #if data[offset] != "\3":
-    #    raise ValueError("Invalid 'true' decode data")
+def _dec_true(data:str, offset:int) -> tuple[bool, int]:
     return True, offset #+ 1
 
-def _dec_false(data:str, offset:int) -> tuple[False, int]:
-    #if data[offset] != "\3":
-    #    raise ValueError("Invalid 'false' decode data")
+def _dec_false(data:str, offset:int) -> tuple[bool, int]:
     return False, offset #+ 1
 
 def _dec_types(data:str, offset:int) -> tuple[type, int]:
