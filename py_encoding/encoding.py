@@ -5,9 +5,9 @@ def encode_data(data) -> str:
     f"""
     Small encoder to encode almost all basic types. \n
     Supported are:\n
-    Float, Int, Str, None, Bool, list, dict, tuple, set. \n
+    Float, Int, Str, None, Bool, list, dict, tuple, set, byte string. \n
     Not supported are:\n
-    bytes and custom types\n
+    Custom types and circular nested structs\n
     !!!Warning: Don't use a " followed by an unescaped \3 in your strings! \n
     It will lead to errors!!! \n
 

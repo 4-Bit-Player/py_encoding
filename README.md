@@ -18,7 +18,7 @@ Currently known issues:
 - 
 - When encoding strings or byte-strings the ' " ' char followed by an unescaped '\3' char will lead to errors.
 - Custom Types are not supported
-- Nested structs are not supported
+- Circular nested structs are not supported
 
 
 Made in pure python and somehow faster at decoding than literal_eval.
