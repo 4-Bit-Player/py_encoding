@@ -19,7 +19,7 @@ data_to_check = [
         "gsdf": dict,
         "hkj": 32254,
         set: None,
-        "nasdcl": "Nosaffne",
+        type(None): "Nosaffne",
         float: list,
         "sdfßxy": {1, 2, "e"},
         "sadf": {"1", tuple, bytes},

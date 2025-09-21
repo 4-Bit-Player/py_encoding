@@ -97,4 +97,5 @@ _type_encode_lookup_table = {
     bool: "7",
     type: "8",
     bytes: "9",
+    type(None):"a",
 }

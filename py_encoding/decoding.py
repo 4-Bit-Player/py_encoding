@@ -95,13 +95,13 @@ def _dec_bytes(data:str, offset:int) -> tuple[bytes, int]:
     return data[offset:end].encode(), end + 2
 
 def _dec_none(data:str, offset:int) -> tuple[None, int]:
-    return None, offset #+ 1
+    return None, offset
 
 def _dec_true(data:str, offset:int) -> tuple[bool, int]:
-    return True, offset #+ 1
+    return True, offset
 
 def _dec_false(data:str, offset:int) -> tuple[bool, int]:
-    return False, offset #+ 1
+    return False, offset
 
 def _dec_types(data:str, offset:int) -> tuple[type, int]:
     return _type_decode_lookup_table[data[offset]], offset+1
@@ -130,4 +130,5 @@ _type_decode_lookup_table = {
     "7":bool,
     "8":type,
     "9":bytes,
+    "a":type(None),
 }
