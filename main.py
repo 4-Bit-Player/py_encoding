@@ -1,12 +1,13 @@
 from py_encoding import *
-from tests.encoding_test import basic_check, full_check, small_compare_check, large_compare_check
-
-
+from tests import encoding_test, byte_encoding_test
 
 
 def main():
-    basic_check()
-    full_check()
+    encoding_test.basic_check()
+    encoding_test.full_check()
+    byte_encoding_test.basic_check()
+    byte_encoding_test.full_check()
+    exit()
 
 
 

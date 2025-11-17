@@ -1,5 +1,5 @@
 from time import perf_counter
-from py_encoding.encoding import encode_data
+from py_encoding.encoding import encode_to_string
 
 p_red = '\033[38;5;160m'
 p_reset = '\033[0;0m'
@@ -94,10 +94,10 @@ stack_time = 0
 default_time = 0
 def _try():
     global total_saving, total_stack, total_default, stack_time, default_time
-    d_result = encode_data(to_test)
+    d_result = encode_to_string(to_test)
     result = iter_test(to_test)
     default_start = perf_counter()
-    d_result = encode_data(to_test)
+    d_result = encode_to_string(to_test)
     default_stop = perf_counter()
     start = perf_counter()
     result = iter_test(to_test)

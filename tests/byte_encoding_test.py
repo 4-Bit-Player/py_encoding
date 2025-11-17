@@ -1,31 +1,27 @@
 from ast import literal_eval
-from time import perf_counter
-from py_encoding import encode_to_string, decode_from_string
-from tests.encodingV1 import encode_dataV1
-from tests.encoding_data_to_check import data_to_check
-from tests.test import encode_dataV4
 from copy import deepcopy
+from time import perf_counter
+
+from tests.encoding_data_to_check import data_to_check
+from py_encoding import encode_to_bytes, decode_from_bytes
 
 p_red = '\033[38;5;160m'
 p_reset = '\033[0;0m'
-#for char in "{(<[\"NTF]>)}":
-#    print(char, ord(char))
-
 
 def basic_check():
     data = deepcopy(data_to_check[0])
     original_data = deepcopy(data)
-    encoded = encode_to_string(data)
-    dec_data:dict = decode_from_string(encoded)
+    encoded = encode_to_bytes(data)
+    dec_data:dict = decode_from_bytes(encoded)
     passing = True
     for key, val in dec_data.items():
         if key not in original_data:
-            print(p_red +f"Error in the string en-/decoder!\n"
-                  f"Key not found in original data: {key}" + p_reset)
+            print(p_red +f"Error in the byte en-/decoder!\n"
+                  f"Key not found in original data: {key}" +p_reset)
             passing = False
             continue
         if original_data[key] != val and type(original_data[key]) != type(val):
-            print(f"Error in the string en-/decoder!\n"
+            print(f"Error in the byte en-/decoder!\n"
                   f"Val was incorrect: {val}\n"
                   f"Should be        : {original_data[key]}\n"
                   f"Is type          : {type(val)}\n"
@@ -34,21 +30,21 @@ def basic_check():
 
     for key, val in data.items():
         if key not in dec_data:
-            print(p_red + f"Error in the string en-/decoder!\n"
-                  f"Original not found: {key}" + p_reset)
+            print(p_red + f"Error in the byte en-/decoder!\n"
+                  f"Original not found: {key}" +p_reset)
             passing = False
             continue
     if passing:
-        print("Basic String En-/Decoding successful!")
+        print("Basic Byte En-/Decoding successful!")
     else:
-        print("Basic String En-/Decoding Failed!")
+        print("Basic Byte En-/Decoding Failed!")
 
 
 def full_check():
     passing = True
     for val in data_to_check:
         try:
-            encoded_data = encode_to_string(val)
+            encoded_data = encode_to_bytes(val)
         except Exception as e:
             passing=False
             print(e)
@@ -56,25 +52,25 @@ def full_check():
             break
 
         try:
-            dec_data = decode_from_string(encoded_data)
+            dec_data = decode_from_bytes(encoded_data)
             if dec_data != val:
                 passing = False
-                print(p_red+f"Error de/encoding string: {type(val)}", p_reset)
+                print(p_red+f"Error de/encoding bytes: {type(val)}", p_reset)
                 print("Should:", val)
                 print("Is    :", dec_data)
-                print("Encoded data:" + encoded_data.replace("\3", "\\3"))
+                print("Encoded data:", encoded_data)
                 exit()
         except Exception as e:
             passing=False
             print(e)
-            print(p_red+"Failed decoding at:", p_reset, val)
-            print("Encoded data:" + encoded_data.replace("\3", "\\3"))
+            print(p_red+"Failed byte decoding at:", p_reset, val)
+            print("Encoded data:", encoded_data)
             exit()
             break
     if passing:
-        print("Full String En-/Decoding successful!")
+        print("Full Byte En-/Decoding successful!")
     else:
-        print("Full String En-/Decoding Failed!")
+        print("Full Byte En-/Decoding Failed!")
 
 
 
@@ -85,18 +81,18 @@ def full_check():
 def small_compare_check():
     for data in data_to_check:
         str(data)
-        encode_to_string(data)
+        encode_to_bytes(data)
         own_encode_start = perf_counter()
-        m_enc_data = encode_to_string(data)
+        m_enc_data = encode_to_bytes(data)
         own_encode_stop = perf_counter()
         #own_enc_v2_start = perf_counter()
         #m_enc_data = encode_dataV2(data)
         #own_enc_v2_stop = perf_counter()
 
 
-        decode_from_string(m_enc_data)
+        decode_from_bytes(m_enc_data)
         own_decode_start = perf_counter()
-        m_dec = decode_from_string(m_enc_data)
+        m_dec = decode_from_bytes(m_enc_data)
         own_decode_stop = perf_counter()
         if type(data) == str:
             continue
@@ -132,13 +128,13 @@ def large_compare_check(size:int=15):
 
     print("Done creating large data...")
     own_encode_start = perf_counter()
-    m_enc_data = encode_to_string(large_data)
+    m_enc_data = encode_to_bytes(large_data)
     own_encode_stop = perf_counter()
     own_enc_v2_start = perf_counter()
-    m_enc_data = encode_dataV1(large_data)
+    #m_enc_data = encode_dataV1(large_data)
     own_enc_v2_stop = perf_counter()
     own_decode_start = perf_counter()
-    m_dec = decode_from_string(m_enc_data)
+    m_dec = decode_from_bytes(m_enc_data)
     own_decode_stop = perf_counter()
     py_encode_start = perf_counter()
     enc_data = str(large_data)
@@ -161,6 +157,31 @@ def large_compare_check(size:int=15):
 
 
 
+def own_comp(iterations:int=1000, size=10):
+    # large_data = data_to_check[1]
+    large_data = deepcopy(data_to_check[6])
+    print("Starting data creation.")
+    for i in range(size):
+        large_data[i] = deepcopy(large_data)
+    print("Data creation done, starting warmup.")
+        # large_data += deepcopy(large_data)
+    for i in range(5):
+        encode_to_bytes(large_data)
+        #encode_dataV4(large_data)
+
+    print("starting V1.")
+
+    v1_start = perf_counter()
+    for i in range(iterations):
+        encode_to_bytes(large_data)
+    v1_stop = perf_counter()
+
+    print("starting V2.")
+
+    v2_start = perf_counter()
+    #for i in range(iterations):
+    #    encode_to_bytes(large_data)
+    v2_stop = perf_counter()
 
 
 
@@ -169,6 +190,40 @@ def large_compare_check(size:int=15):
 
 
 
+    print(f"V1 took: {v1_stop - v1_start:.7f} seconds.\n"
+          f"V2 took: {v2_stop - v2_start:.7f} seconds."
+          )
 
 
 
+def json_test(iterations:int=1000, size=10):
+    #large_data = deepcopy(data_to_check[6])
+    large_data = deepcopy(data_to_check[1])
+    print("Starting data creation.")
+    for i in range(size):
+        large_data[i] = deepcopy(large_data)
+    print("Data creation done, starting warmup.")
+    # large_data += deepcopy(large_data)
+    for i in range(5):
+        encode_to_bytes(large_data)
+        #encode_dataV4(large_data)
+
+    print("Warmup done, starting V2.")
+
+    v1_start = perf_counter()
+    for i in range(iterations):
+        data = encode_to_bytes(large_data)
+    v1_stop = perf_counter()
+
+    print("V2 done, starting V1.")
+
+    j_start = perf_counter()
+    #for i in range(iterations):
+    #    json_data = encode_dataV4(large_data)
+    j_stop = perf_counter()
+
+
+
+    print(f"V3 took: {v1_stop - v1_start:.7f} seconds.\n"
+          f"V4 took: {j_stop - j_start:.7f} seconds."
+          )

@@ -1,15 +1,15 @@
 
 # encoder V4
 
-def encode_data(data) -> str:
+def encode_to_string(data) -> str:
     f"""
-    Small encoder to encode almost all basic types. \n
-    Supported are:\n
-    Float, Int, Str, None, Bool, list, dict, tuple, set, byte string. \n
-    Not supported are:\n
-    Custom types and circular nested structs\n
-    !!!Warning: Don't use a " followed by an unescaped \3 in your strings! \n
-    It will lead to errors!!! \n
+    Small encoder to encode almost all basic types. 
+    Supported are:
+    Float, Int, Str, None, Bool, list, dict, tuple, set, byte string. 
+    Not supported are:
+    Custom types and circular nested structs
+    !!!Warning: Don't use a " followed by an unescaped \3 in your strings! ("\3)
+    It will lead to errors!!! 
 
     (Encoding pure strings will be larger than the basic ones.)
     """

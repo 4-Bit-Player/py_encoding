@@ -1,16 +1,34 @@
 
 
 
-def decode_data(data:str):
+def decode_from_string(data:str):
     """
     Small decode function.\n
-    Only works with strings that got encoded with my small encoder.
+    Only works with strings that got encoded with my small string encoder.
+    !!! Does NOT work with the byte encoding !!!
     :param data: The encoded string.
     :return: Whatever the string was before it got encoded.
     """
-    if type(data) != str:
-        err_msg = "Invalid type to decode: " + str(type(data))
-        raise ValueError(err_msg)
+    t = type(data)
+
+    if t == str:
+        if len(data) == 0:
+            return ""
+        start_char = ord(data[0])
+        if start_char < 125:
+            val, _ = _lookup_table[start_char](data, 1)
+            return val
+        raise ValueError("Invalid start char!")
+
+
+    err_msg = "Invalid type to decode: " + str(type(data))
+    raise ValueError(err_msg)
+
+
+def _decode_from_string(data:str):
+    """
+    Fall back function for the byte decoder.
+    """
     if len(data) == 0:
         return ""
     start_char = ord(data[0])
@@ -18,6 +36,8 @@ def decode_data(data:str):
         val, _ = _lookup_table[start_char](data, 1)
         return val
     raise ValueError("Invalid start char!")
+
+
 
 
 
@@ -55,9 +75,6 @@ def _dec_set(data, offset) -> tuple[set, int]:
     return set(out), start+1
 
 
-
-
-
 def _dec_dict(data:str, offset:int) -> tuple[dict, int]:
     start = offset
     out:dict = {}
@@ -72,9 +89,7 @@ def _dec_dict(data:str, offset:int) -> tuple[dict, int]:
     return out, start+1
 
 
-
-
-def _dec_val(data:str, offset:int) -> tuple[any, int]:
+def _dec_num(data:str, offset:int) -> tuple[int | float, int]:
     """
     :return: returns the value and the new offset
     """
@@ -83,7 +98,6 @@ def _dec_val(data:str, offset:int) -> tuple[any, int]:
     if "." in num:
         return float(num), end+1
     return int(num), end+1,
-
 
 
 def _dec_string(data:str, offset:int) -> tuple[str, int]:
@@ -107,7 +121,7 @@ def _dec_types(data:str, offset:int) -> tuple[type, int]:
     return _type_decode_lookup_table[data[offset]], offset+1
 
 
-_lookup_table = [_dec_val for _ in range(125)]
+_lookup_table = [_dec_num for _ in range(125)]
 _lookup_table[ord("{")] = _dec_dict
 _lookup_table[ord("[")] = _dec_list
 _lookup_table[ord("<")] = _dec_set
