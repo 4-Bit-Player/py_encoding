@@ -1,6 +1,6 @@
 from ast import literal_eval
 from time import perf_counter
-from py_encoding import encode_to_string, decode_from_string
+from py_encoding import encode_to_string, decode_from_string, encode_to_bytes, decode_from_bytes
 from tests.encodingV1 import encode_dataV1
 from tests.encoding_data_to_check import data_to_check
 from tests.test import encode_dataV4

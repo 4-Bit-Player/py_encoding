@@ -1,6 +1,6 @@
 # byte encoder V1
 
-# next free: b"\x15"
+# next free: b"\x18"
 
 def encode_to_bytes(data) -> bytes:
     f"""
@@ -124,11 +124,31 @@ def _enc_int(val:int, result: list[bytes]):
 
 
 def _enc_float(val:float, result: list[bytes]):
-    result.append(b"\x07")
-    bts = str(val).encode("utf-8")
-    size = len(bts)
-    result.append(size.to_bytes(byteorder="big"))
-    result.append(bts)
+    is_negative = False
+    if val < 0:
+        val = -val
+        is_negative = True
+
+    val, divider = val.as_integer_ratio()
+
+    size = val.bit_length()
+    if size <= 255:
+        if is_negative:
+            result.append(b"\x15" + divider.bit_length().to_bytes(1, byteorder="big") + size.to_bytes(byteorder="big") + val.to_bytes(size, byteorder="big"))
+        else:
+            result.append(b"\x07" + divider.bit_length().to_bytes(1, byteorder="big") + size.to_bytes(byteorder="big") + val.to_bytes(size, byteorder="big"))
+        return
+
+    # Looorge number O_o
+
+    req_bytes = (size.bit_length() + 7) // 8
+
+    if is_negative:
+        result.append(b"\x16" + req_bytes.to_bytes(byteorder="big") + size.to_bytes(req_bytes, byteorder="big") + val.to_bytes(size, byteorder="big"))
+    else:
+        result.append(b"\x17" + req_bytes.to_bytes(byteorder="big") + size.to_bytes(req_bytes, byteorder="big") + val.to_bytes(size, byteorder="big"))
+
+
 
 
 

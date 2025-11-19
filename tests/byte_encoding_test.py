@@ -1,3 +1,4 @@
+import random
 from ast import literal_eval
 from copy import deepcopy
 from time import perf_counter
@@ -7,6 +8,18 @@ from py_encoding import encode_to_bytes, decode_from_bytes
 
 p_red = '\033[38;5;160m'
 p_reset = '\033[0;0m'
+
+
+def _err_message(expected, actual):
+    t_ex = type(expected)
+    t_ac = type(actual)
+
+    print(p_red + f"Error in en/decoder!\n"
+                  f"Expected Value: {expected}\n"
+                  f"Expected type : {t_ex}\n"
+                  f"Decoded Value : {actual}\n"
+                  f"Decoded Type  : {t_ac}" + p_reset)
+
 
 def basic_check():
     data = deepcopy(data_to_check[0])
@@ -157,73 +170,55 @@ def large_compare_check(size:int=15):
 
 
 
-def own_comp(iterations:int=1000, size=10):
-    # large_data = data_to_check[1]
-    large_data = deepcopy(data_to_check[6])
-    print("Starting data creation.")
-    for i in range(size):
-        large_data[i] = deepcopy(large_data)
-    print("Data creation done, starting warmup.")
-        # large_data += deepcopy(large_data)
-    for i in range(5):
-        encode_to_bytes(large_data)
-        #encode_dataV4(large_data)
+def test_nums(seed:int|float=None):
+    if seed is None:
+        seed = random.random()
+        print(f"Current seed: {seed}")
+    random.seed(seed)
 
-    print("starting V1.")
+    for test_val in range(10000):
+        encoded = encode_to_bytes(test_val)
+        decoded = decode_from_bytes(encoded)
 
-    v1_start = perf_counter()
-    for i in range(iterations):
-        encode_to_bytes(large_data)
-    v1_stop = perf_counter()
+        if decoded != test_val:
+            _err_message(test_val, decoded)
 
-    print("starting V2.")
+        test_val = -test_val
+        encoded = encode_to_bytes(test_val)
+        decoded = decode_from_bytes(encoded)
 
-    v2_start = perf_counter()
-    #for i in range(iterations):
-    #    encode_to_bytes(large_data)
-    v2_stop = perf_counter()
+        if decoded != test_val:
+            _err_message(test_val, decoded)
 
 
+    for _ in range(10000):
+        test_val = random.randint(10001,1000000000000000)
 
+        encoded = encode_to_bytes(test_val)
+        decoded = decode_from_bytes(encoded)
 
+        if decoded != test_val:
+            _err_message(test_val, decoded)
 
+        test_val = -test_val
+        encoded = encode_to_bytes(test_val)
+        decoded = decode_from_bytes(encoded)
 
+        if decoded != test_val:
+            _err_message(test_val, decoded)
 
+    for _ in range(10000):
+        test_val = random.random() * random.randint(1,100000)
 
-    print(f"V1 took: {v1_stop - v1_start:.7f} seconds.\n"
-          f"V2 took: {v2_stop - v2_start:.7f} seconds."
-          )
+        encoded = encode_to_bytes(test_val)
+        decoded = decode_from_bytes(encoded)
 
+        if decoded != test_val:
+            _err_message(test_val, decoded)
 
+        test_val = -test_val
+        encoded = encode_to_bytes(test_val)
+        decoded = decode_from_bytes(encoded)
 
-def json_test(iterations:int=1000, size=10):
-    #large_data = deepcopy(data_to_check[6])
-    large_data = deepcopy(data_to_check[1])
-    print("Starting data creation.")
-    for i in range(size):
-        large_data[i] = deepcopy(large_data)
-    print("Data creation done, starting warmup.")
-    # large_data += deepcopy(large_data)
-    for i in range(5):
-        encode_to_bytes(large_data)
-        #encode_dataV4(large_data)
-
-    print("Warmup done, starting V2.")
-
-    v1_start = perf_counter()
-    for i in range(iterations):
-        data = encode_to_bytes(large_data)
-    v1_stop = perf_counter()
-
-    print("V2 done, starting V1.")
-
-    j_start = perf_counter()
-    #for i in range(iterations):
-    #    json_data = encode_dataV4(large_data)
-    j_stop = perf_counter()
-
-
-
-    print(f"V3 took: {v1_stop - v1_start:.7f} seconds.\n"
-          f"V4 took: {j_stop - j_start:.7f} seconds."
-          )
+        if decoded != test_val:
+            _err_message(test_val, decoded)

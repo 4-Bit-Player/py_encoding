@@ -1,4 +1,3 @@
-from py_encoding import *
 from tests import encoding_test, byte_encoding_test
 
 
