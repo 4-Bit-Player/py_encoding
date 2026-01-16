@@ -1,4 +1,6 @@
 from .decoding import _decode_from_string
+class ByteDecodeError(Exception):
+    pass
 
 
 def decode_from_bytes(data:bytes):
@@ -7,6 +9,8 @@ def decode_from_bytes(data:bytes):
 
     Only works with bytes that got encoded with my small byte encoder.
     Tries to fall back to the string decoder if the input is a string or the start byte is incorrect.
+
+    Raises an ByteDecodeError if it fails.
 
     :param data: The encoded bytes.
     :return: Whatever the bytes were before it got encoded.
@@ -17,16 +21,18 @@ def decode_from_bytes(data:bytes):
             return b""
         index = data[0]
         if index <= _highest_num:
-            val, _ = _lookup_table[index](data, 1)
-            return val
-
+            try:
+                val, _ = _lookup_table[index](data, 1)
+                return val
+            except (IndexError, ValueError) as e:
+                raise ByteDecodeError("Failed to decode bytes.")
         try:
             return _decode_from_string(data.decode("utf-8"))
 
         except (ValueError, IndexError) as e:
             pass
 
-        raise ValueError("Invalid start char!")
+        raise ByteDecodeError("Invalid start char!")
 
 
     if t == str:
@@ -37,7 +43,7 @@ def decode_from_bytes(data:bytes):
 
 
     err_msg = "Invalid type to decode: " + str(t)
-    raise ValueError(err_msg)
+    raise ByteDecodeError(err_msg)
 
 
 
